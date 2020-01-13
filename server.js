@@ -16,8 +16,8 @@ var app=http.createServer(function (req, res) {
 	var currentDate = null;
 
 
-	//dataType options = BP, SPO2, Weight
-	dataType = 'BP';
+	//dataType options = BP, SPO2, Weight, Glucose
+	dataType = 'Glucose';
 
 	if(dataType == 'BP'){
 		sampleData["blood pressure"] = [];
@@ -80,6 +80,28 @@ var app=http.createServer(function (req, res) {
 			currentPoint["endDate"] = currentDate;
 
 			sampleData["spo2"].push(currentPoint);
+		}
+	}else if(dataType == "Glucose"){
+		sampleData["glucose"] = [];
+		var currentGlucose = 0;
+		//All sample data is after meals
+		var before_meal = false;
+
+		for(i=0;i<numDataPoints;i++){
+			currentPoint = {};
+			currentGlucose = randomIntFromInterval(140,170);
+
+			if(currentDate){
+				currentDate = moment(currentDate).subtract(1,'days');
+			}else{
+				currentDate = moment();
+			}
+
+			currentPoint["quantity"] = currentGlucose.toString();
+			currentPoint["endDate"] = currentDate;
+			currentPoint["before_meal"] = before_meal;
+
+			sampleData["glucose"].push(currentPoint);
 		}
 	}
 
